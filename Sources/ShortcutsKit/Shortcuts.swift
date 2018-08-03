@@ -60,11 +60,11 @@ public struct Shortcuts {
         case url = "WFURLContentItem"
     }
 
-    public var clientVersion = "654"
+    public var clientVersion = Constants.defaultClientVersion
 
-    public var clientRelease = "2.0"
+    public var clientRelease = Constants.defaultClientRelease
 
-    public var minClientVersion = "411"
+    public var minClientVersion = Constants.defaultMinClientVersion
 
     public var icon = Icon(startColor: Constants.defaultStartColor, imageData: nil, glyphNumber: Constants.defaultGlyphNumber)
 

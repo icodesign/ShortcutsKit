@@ -9,6 +9,9 @@ import Foundation
 
 struct Constants {
 
+    static let defaultClientVersion = "654"
+    static let defaultClientRelease = "2.0"
+    static let defaultMinClientVersion = "411"
     static let defaultStartColor = 2846468607
     static let defaultGlyphNumber = 59818
 
