@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Constants {
+struct GlobalConstants {
 
     static let defaultClientVersion = "654"
     static let defaultClientRelease = "2.0"
@@ -15,8 +15,10 @@ struct Constants {
     static let defaultStartColor = 2846468607
     static let defaultGlyphNumber = 59818
 
-    struct Identifier {
-        static let comment = "is.workflow.actions.comment"
+    struct Action {
+        static let parameterUUID = "UUID"
+        static let parameterActionIdentifier = "WFWorkflowActionIdentifier"
+        static let parameterActionParameter = "WFWorkflowActionParameters"
     }
 
     struct Parameter {
@@ -35,6 +37,27 @@ struct Constants {
         // Action
         static let actionIdentifier = "WFWorkflowActionIdentifier"
         static let actionParameter = "WFWorkflowActionParameters"
-        static let commentActionText = "WFCommentActionText"
+
+        static let actionParameterUUID = "UUID"
+        static let actionParameterValue = "Value"
+        static let actionParameterKey = "WFKey"
+
+        enum ItemType: Int {
+            case text = 0
+        }
+
+        static let actionParameterItemType = "WFItemType"
+
+        enum SerializationType: String {
+            case dictionaryField = "DictionaryField"
+        }
+
+        static let actionParameterSerializationType = "WFSerializationType"
+        static let actionParameterValueString = "string"
+        static let actionParameterDictionaryFieldValueItems = "WFDictionaryFieldValueItems"
+        static let actionParameterValueAttachmentsByRange = "attachmentsByRange"
+        static let actionParameterValueOutputUUID = "OutputUUID"
+        static let actionParameterValueType = "Type"
+        static let actionParameterValueOutputName = "OutputName"
     }
 }

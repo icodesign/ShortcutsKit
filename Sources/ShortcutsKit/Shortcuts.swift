@@ -11,10 +11,30 @@ public enum ShortcutsError: Error {
     case invalidPlist
     case missingActionIdentifier
     case unsupportedActionIdentifier
-    case missingComment
+    case missingParameter(String)
 }
 
 public struct Shortcuts {
+
+    private struct Constants {
+        static let clientVersion = "WFWorkflowClientVersion"
+        static let clientRelease = "WFWorkflowClientRelease"
+        static let minClientVersion = "WFWorkflowMinimumClientVersion"
+        static let icon = "WFWorkflowIcon"
+        static let questions = "WFWorkflowImportQuestions"
+        static let types = "WFWorkflowTypes"
+        static let contentItems = "WFWorkflowInputContentItemClasses"
+        static let actions = "WFWorkflowActions"
+        static let iconStartColor = "WFWorkflowIconStartColor"
+        static let iconImageData = "WFWorkflowIconImageData"
+        static let iconGlyphNumber = "WFWorkflowIconGlyphNumber"
+
+        static let defaultClientVersion = "654"
+        static let defaultClientRelease = "2.0"
+        static let defaultMinClientVersion = "411"
+        static let defaultStartColor = 2846468607
+        static let defaultGlyphNumber = 59818
+    }
     
     public struct Icon {
         public var startColor: Int
@@ -23,9 +43,9 @@ public struct Shortcuts {
 
         func dictRepresentation() -> [String: Any] {
             var dict: [String: Any] = [:]
-            dict[Constants.Parameter.iconStartColor] = startColor
-            dict[Constants.Parameter.iconImageData] = imageData ?? Data()
-            dict[Constants.Parameter.iconGlyphNumber] = glyphNumber
+            dict[Constants.iconStartColor] = startColor
+            dict[Constants.iconImageData] = imageData ?? Data()
+            dict[Constants.iconGlyphNumber] = glyphNumber
             return dict
         }
     }
@@ -81,37 +101,34 @@ public struct Shortcuts {
     }
 
     public init(json: [String: Any]) throws {
-        if let clientVersion = json[Constants.Parameter.clientVersion] as? String {
+        if let clientVersion = json[Constants.clientVersion] as? String {
             self.clientVersion = clientVersion
         }
-        if let clientRelease = json[Constants.Parameter.clientRelease] as? String {
+        if let clientRelease = json[Constants.clientRelease] as? String {
             self.clientRelease = clientRelease
         }
-        if let minClientVersion = json[Constants.Parameter.minClientVersion] as? String {
+        if let minClientVersion = json[Constants.minClientVersion] as? String {
             self.minClientVersion = minClientVersion
         }
-        if let icon = json[Constants.Parameter.icon] as? [String: Any] {
-            let startColor = icon[Constants.Parameter.iconStartColor] as? Int ?? Constants.defaultStartColor
-            let imageData = icon[Constants.Parameter.iconImageData] as? Data ?? Data()
-            let glyphNumber = icon[Constants.Parameter.iconGlyphNumber] as? Int ?? Constants.defaultGlyphNumber
+        if let icon = json[Constants.icon] as? [String: Any] {
+            let startColor = icon[Constants.iconStartColor] as? Int ?? Constants.defaultStartColor
+            let imageData = icon[Constants.iconImageData] as? Data ?? Data()
+            let glyphNumber = icon[Constants.iconGlyphNumber] as? Int ?? Constants.defaultGlyphNumber
             self.icon = Icon(startColor: startColor, imageData: imageData, glyphNumber: glyphNumber)
         }
-        if let _ = json[Constants.Parameter.questions] as? String {
+        if let _ = json[Constants.questions] as? String {
             // TODO
         }
-        if let types = json[Constants.Parameter.types] as? [String] {
+        if let types = json[Constants.types] as? [String] {
             self.types = types.compactMap { AvaiableType(rawValue: $0) }
         }
-        if let contentItems = json[Constants.Parameter.contentItems] as? [String] {
+        if let contentItems = json[Constants.contentItems] as? [String] {
             self.contentItems = contentItems.compactMap { ContentItem(rawValue: $0) }
         }
-        if let actionContents = json[Constants.Parameter.actions] as? [[String: Any]] {
+        if let actionJSONs = json[Constants.actions] as? [[String: Any]] {
             var actions: [Action] = []
-            for actionContent in actionContents {
-                guard let identifier = actionContent[Constants.Parameter.actionIdentifier] as? String else {
-                    throw ShortcutsError.missingActionIdentifier
-                }
-                let action = try ActionHelper.action(from: identifier, parameters: actionContent[Constants.Parameter.actionParameter] as? [String: Any])
+            for json in actionJSONs {
+                let action = try ActionHelper.action(from: json)
                 actions.append(action)
             }
             self.actions = actions
@@ -120,14 +137,14 @@ public struct Shortcuts {
 
     public func dictRepresentation() -> [String: Any] {
         var dict: [String: Any] = [:]
-        dict[Constants.Parameter.clientVersion] = clientVersion
-        dict[Constants.Parameter.clientRelease] = clientRelease
-        dict[Constants.Parameter.minClientVersion] = minClientVersion
-        dict[Constants.Parameter.icon] = icon.dictRepresentation()
-        dict[Constants.Parameter.questions] = []
-        dict[Constants.Parameter.types] = types.map { $0.rawValue }
-        dict[Constants.Parameter.contentItems] = contentItems.map { $0.rawValue }
-        dict[Constants.Parameter.actions] = actions.map { $0.dictRepresentation() }
+        dict[Constants.clientVersion] = clientVersion
+        dict[Constants.clientRelease] = clientRelease
+        dict[Constants.minClientVersion] = minClientVersion
+        dict[Constants.icon] = icon.dictRepresentation()
+        dict[Constants.questions] = []
+        dict[Constants.types] = types.map { $0.rawValue }
+        dict[Constants.contentItems] = contentItems.map { $0.rawValue }
+        dict[Constants.actions] = actions.map { $0.dictRepresentation() }
         return dict
     }
 
